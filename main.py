@@ -2,144 +2,185 @@ from flask import Flask
 
 app = Flask(__name__)
 
-BETTING_APP_REAL = """
+STAKE_STYLE_APP = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CLAYTON BETS v5</title>
+    <title>CLAYTON ENGINE PRO</title>
     <style>
         :root {
-            --bg-darker: #0b0e14;
-            --bg-panel: #151a22;
-            --bg-button: #202732;
+            --bg-dark: #0f212e;
+            --bg-card: #1a2c38;
+            --bg-inner: #213743;
             --accent-green: #00e701;
-            --accent-gold: #f5a623;
+            --accent-gold: #feeb1a;
+            --accent-blue: #2f80ed;
             --text-white: #ffffff;
-            --text-gray: #8a96a3;
-            --border-line: #2a3543;
+            --text-muted: #b1b6bb;
+            --border: #2c3f4b;
         }
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg-darker); margin: 0; padding: 0; color: var(--text-white); padding-bottom: 90px; }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-dark); margin: 0; padding: 12px; color: var(--text-white); padding-bottom: 100px; }
+        .container { max-width: 100%; margin: 0 auto; }
         
-        /* Barra de Navegación de Deportes */
-        .sports-nav { display: flex; overflow-x: auto; background: var(--bg-panel); padding: 10px; gap: 8px; border-bottom: 1px solid var(--border-line); white-space: nowrap; }
-        .sport-chip { background: var(--bg-button); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--text-gray); border: 1px solid transparent; }
-        .sport-chip.active { background: rgba(0, 231, 1, 0.1); border-color: var(--accent-green); color: var(--accent-green); }
-        
-        /* Cabecera del Evento */
-        .league-title { font-size: 11px; font-weight: 700; color: var(--text-gray); text-transform: uppercase; padding: 14px 12px 4px 12px; display: flex; justify-content: space-between; }
-        
-        /* Tarjeta de Partido Estilo Profesional */
-        .match-card { background: var(--bg-panel); margin: 0 12px 10px 12px; border-radius: 8px; padding: 12px; border: 1px solid rgba(255,255,255,0.02); }
-        .teams-container { font-size: 14px; font-weight: 700; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
-        .team-row { display: flex; justify-content: space-between; align-items: center; }
-        .team-row span { font-weight: 400; font-size: 11px; color: var(--text-gray); }
-        
-        /* Botones de Cuotas (Odds) */
-        .odds-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
-        .odd-btn { background: var(--bg-button); border: 1px solid var(--border-line); border-radius: 6px; padding: 10px; color: var(--text-white); cursor: pointer; text-align: center; transition: all 0.2s ease; }
-        .odd-btn span { display: block; font-size: 10px; color: var(--text-gray); font-weight: bold; text-transform: uppercase; margin-bottom: 2px; }
-        .odd-btn strong { font-size: 14px; color: var(--accent-green); }
-        .odd-btn.selected { background: var(--accent-green) !important; color: #000 !important; border-color: var(--accent-green); }
-        .odd-btn.selected span, .odd-btn.selected strong { color: #000 !important; }
+        header { background: var(--bg-card); border-bottom: 2px solid var(--accent-green); padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
+        .logo { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; }
+        .logo span { color: var(--accent-green); }
 
-        /* Panel Desplegable de Pronóstico */
-        .forecast-panel { background: rgba(0,0,0,0.15); border-radius: 6px; margin-top: 8px; padding: 10px; font-size: 11px; border-left: 3px solid var(--accent-gold); display: none; }
-        .forecast-grid { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .forecast-grid strong { color: var(--accent-gold); }
+        /* MÓDULO SUPERCOMBINADA DESTACADO */
+        .premium-box { background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); border: 2px solid var(--accent-green); border-radius: 10px; padding: 12px; margin-bottom: 16px; }
+        .premium-title { font-size: 12px; font-weight: 800; color: var(--accent-green); text-transform: uppercase; margin-bottom: 6px; }
+        .premium-list { padding-left: 14px; margin: 0; font-size: 11px; color: #e2e8f0; line-height: 1.5; }
+        .premium-list strong { color: var(--accent-gold); }
 
-        .btn-analizar { width: 100%; background: transparent; border: 1px solid var(--border-line); color: var(--text-gray); padding: 6px; font-size: 11px; border-radius: 4px; margin-top: 6px; font-weight: bold; }
+        /* TARJETA DE PARTIDO REAL */
+        .match-panel { background: var(--bg-card); border-radius: 10px; padding: 12px; margin-bottom: 14px; border: 1px solid var(--border); }
+        .match-info { font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .teams { font-size: 15px; font-weight: 800; margin-bottom: 10px; color: #fff; }
+        
+        /* BLOQUES DE INFORMACIÓN DIRECTA */
+        .data-row { background: var(--bg-inner); padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .data-label { color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+        .data-value { font-weight: 700; color: #fff; }
+        .highlight-gold { color: var(--accent-gold); font-size: 14px; }
+        .highlight-green { color: var(--accent-green); }
 
-        /* Ticket / Boleto de Apuestas Abajo */
-        .bet-slip { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-panel); border-top: 2px solid var(--accent-green); padding: 14px; display: none; box-shadow: 0 -4px 15px rgba(0,0,0,0.5); z-index: 100; }
-        .slip-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; }
-        .slip-summary { display: flex; justify-content: space-between; align-items: center; background: var(--bg-darker); padding: 10px; border-radius: 6px; font-size: 12px; }
-        .slip-summary input { background: transparent; border: none; color: #fff; font-size: 14px; font-weight: bold; text-align: right; width: 60px; outline: none; border-bottom: 1px solid var(--border-line); }
-        .btn-place-bet { width: 100%; background: var(--accent-green); color: #000; border: none; padding: 12px; font-weight: 800; font-size: 13px; border-radius: 6px; text-transform: uppercase; margin-top: 10px; letter-spacing: 0.5px; }
+        /* BOTONES DE CASAS DE APUESTAS (1X2) */
+        .odds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+        .odd-item { background: var(--bg-inner); border: 1px solid var(--border); padding: 8px; border-radius: 6px; text-align: center; color: #fff; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .odd-item span { display: block; font-size: 9px; color: var(--text-muted); margin-bottom: 2px; }
+        .odd-item strong { color: var(--accent-green); font-size: 13px; }
+        .odd-item.selected { background: var(--accent-green) !important; color: #000 !important; }
+        .odd-item.selected strong, .odd-item.selected span { color: #000 !important; }
+
+        /* BOLETO FLOTANTE ABAJO */
+        .ticket-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-top: 3px solid var(--accent-green); padding: 12px; display: none; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
+        .ticket-flex { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; align-items: center; }
+        .bet-input { background: var(--bg-inner); border: 1px solid var(--border); color: #fff; padding: 6px; width: 50px; text-align: center; border-radius: 4px; font-weight: bold; }
+        .btn-bet { width: 100%; background: var(--accent-green); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-top: 8px; }
     </style>
 </head>
 <body>
+<div class="container">
 
-    <!-- Selector de Deportes de la App -->
-    <div class="sports-nav">
-        <div class="sport-chip active">⚽ Fútbol</div>
-        <div class="sport-chip">🏀 Baloncesto</div>
-        <div class="sport-chip">🎾 Tenis</div>
-        <div class="sport-chip">🎮 eSports</div>
+    <header>
+        <div class="logo">🎯 CLAYTON <span>MATCH CENTER v5</span></div>
+    </header>
+
+    <!-- BLOQUE GLOBAL DE APUESTAS COMBINADAS SEGURAS -->
+    <div class="premium-box">
+        <div class="premium-title">🔒 COMBINADA DE ÉXITO SEGURO (CONFIANZA GLOBAL: 84%)</div>
+        <ul class="premium-list">
+            <li>⚽ Brasil vs Noruega ➔ <strong>Más de 1.5 Goles</strong> (95% Éxito)</li>
+            <li>⚽ R. Madrid vs Barcelona ➔ <strong>Ambos marcan gol</strong> (92% Éxito)</li>
+            <li>⚽ Argentina vs Francia ➔ <strong>Más de 2.5 Tarjetas</strong> (89% Éxito)</li>
+        </ul>
     </div>
 
-    <div class="league-title"> Copa del Mundo 🏆 <span>Mercados principales</span></div>
-
     <!-- PARTIDO 1 -->
-    <div class="match-card" id="m1">
-        <div class="teams-container">
-            <div class="team-row">Brasil 🇧🇷 <span>Goles prom: 2.64</span></div>
-            <div class="team-row">Noruega 🇳🇴 <span>Goles prom: 1.85</span></div>
+    <div class="match-panel">
+        <div class="match-info"><span>Copa del Mundo 🏆</span> <span style="color:var(--accent-green);">En Vivo</span></div>
+        <div class="teams">Brasil 🇧🇷 vs Noruega 🇳🇴</div>
+        
+        <div class="data-row">
+            <span class="data-label">🔮 Resultado Exacto</span>
+            <span class="data-value highlight-gold">3 - 2</span>
         </div>
-        <div class="odds-row">
-            <div class="odd-btn" onclick="selectOdd(this, 'Brasil', 1.85, 'Brasil vs Noruega')"><span>1</span><strong>1.85</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Empate', 3.40, 'Brasil vs Noruega')"><span>X</span><strong>3.40</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Noruega', 4.20, 'Brasil vs Noruega')"><span>2</span><strong>4.20</strong></div>
+        <div class="data-row">
+            <span class="data-label">📈 Probabilidad Goles</span>
+            <span class="data-value">Más de 2.5 Goles (72% Prob)</span>
         </div>
-        <button class="btn-analizar" onclick="toggleForecast('m1-f')">🤖 FACTORES Y PRONÓSTICO CLAYTON</button>
-        <div class="forecast-panel" id="m1-f">
-            <div class="forecast-grid">🎯 Resultado Probable: <strong>3 - 2</strong> <span>(Prob: 21%)</span></div>
-            <div class="forecast-grid">👟 Anotador Clave: <span>Haaland (64%)</span></div>
-            <div class="forecast-grid">🌡️ Factor Influyente: <span>29°C + 82% Humedad (Sufre Noruega)</span></div>
+        <div class="data-row">
+            <span class="data-label">👟 Quién Marcará</span>
+            <span class="data-value">E. Haaland (64%) / Vinícius Jr (58%)</span>
+        </div>
+        <div class="data-row">
+            <span class="data-label">🌪️ Factores de Entorno</span>
+            <span class="data-value highlight-green">29°C + Humedad Alta (Ventaja Local)</span>
+        </div>
+
+        <div class="odds-grid">
+            <div class="odd-item" onclick="marcarCuota(this, 1.85)"><span>Gana Local</span><strong>1.85</strong></div>
+            <div class="odd-item" onclick="marcarCuota(this, 3.40)"><span>Empate</span><strong>3.40</strong></div>
+            <div class="odd-item" onclick="marcarCuota(this, 4.20)"><span>Gana Visita</span><strong>4.20</strong></div>
         </div>
     </div>
 
     <!-- PARTIDO 2 -->
-    <div class="match-card" id="m2">
-        <div class="teams-container">
-            <div class="team-row">México 🇲🇽 <span>Goles prom: 1.10</span></div>
-            <div class="team-row">Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿 <span>Goles prom: 2.10</span></div>
+    <div class="match-panel">
+        <div class="match-info"><span>Copa del Mundo 🏆</span> <span>Hoy | 22:00h</span></div>
+        <div class="teams">México 🇲🇽 vs Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+        
+        <div class="data-row">
+            <span class="data-label">🔮 Resultado Exacto</span>
+            <span class="data-value highlight-gold">1 - 2</span>
         </div>
-        <div class="odds-row">
-            <div class="odd-btn" onclick="selectOdd(this, 'México', 3.20, 'México vs Inglaterra')"><span>1</span><strong>3.20</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Empate', 3.10, 'México vs Inglaterra')"><span>X</span><strong>3.10</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Inglaterra', 2.10, 'México vs Inglaterra')"><span>2</span><strong>2.10</strong></div>
+        <div class="data-row">
+            <span class="data-label">📈 Probabilidad Goles</span>
+            <span class="data-value">Menos de 2.5 Goles (62% Prob)</span>
         </div>
-        <button class="btn-analizar" onclick="toggleForecast('m2-f')">🤖 FACTORES Y PRONÓSTICO CLAYTON</button>
-        <div class="forecast-panel" id="m2-f">
-            <div class="forecast-grid">🎯 Resultado Probable: <strong>1 - 2</strong> <span>(Prob: 18%)</span></div>
-            <div class="forecast-grid">👟 Anotador Clave: <span>Harry Kane (55%)</span></div>
-            <div class="forecast-grid">🏔️ Factor Influyente: <span>Altitud Estadio Azteca (Ahoga a Inglaterra)</span></div>
+        <div class="data-row">
+            <span class="data-label">👟 Quién Marcará</span>
+            <span class="data-value">Harry Kane (55%) / S. Giménez (38%)</span>
+        </div>
+        <div class="data-row">
+            <span class="data-label">🌪️ Factores de Entorno</span>
+            <span class="data-value highlight-green">Altitud Estadio Azteca (Ahoga Visita)</span>
+        </div>
+
+        <div class="odds-grid">
+            <div class="odd-item" onclick="marcarCuota(this, 3.20)"><span>Gana Local</span><strong>3.20</strong></div>
+            <div class="odd-item" onclick="marcarCuota(this, 3.10)"><span>Empate</span><strong>3.10</strong></div>
+            <div class="odd-item" onclick="marcarCuota(this, 2.10)"><span>Gana Visita</span><strong>2.10</strong></div>
         </div>
     </div>
 
     <!-- PARTIDO 3 -->
-    <div class="match-card" id="m3">
-        <div class="teams-container">
-            <div class="team-row">Argentina 🇦🇷 <span>Goles prom: 2.30</span></div>
-            <div class="team-row">Francia 🇫🇷 <span>Goles prom: 2.40</span></div>
+    <div class="match-panel">
+        <div class="match-info"><span>Amistoso Internacional 🌍</span> <span>Hoy | 23:45h</span></div>
+        <div class="teams">Argentina 🇦🇷 vs Francia 🇫🇷</div>
+        
+        <div class="data-row">
+            <span class="data-label">🔮 Resultado Exacto</span>
+            <span class="data-value highlight-gold">2 - 2</span>
         </div>
-        <div class="odds-row">
-            <div class="odd-btn" onclick="selectOdd(this, 'Argentina', 2.45, 'Argentina vs Francia')"><span>1</span><strong>2.45</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Empate', 3.20, 'Argentina vs Francia')"><span>X</span><strong>3.20</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Francia', 2.60, 'Argentina vs Francia')"><span>2</span><strong>2.60</strong></div>
+        <div class="data-row">
+            <span class="data-label">📈 Probabilidad Goles</span>
+            <span class="data-value">Ambos Anotan (88% Prob)</span>
         </div>
-        <button class="btn-analizar" onclick="toggleForecast('m3-f')">🤖 FACTORES Y PRONÓSTICO CLAYTON</button>
-        <div class="forecast-panel" id="m3-f">
-            <div class="forecast-grid">🎯 Resultado Probable: <strong>2 - 2</strong> <span>(Prob: 14%)</span></div>
-            <div class="forecast-grid">👟 Anotador Clave: <span>Mbappé (59%)</span></div>
-            <div class="forecast-grid">⚔️ Factor Influyente: <span>H2H con alta tasa de goles (+3.5)</span></div>
+        <div class="data-row">
+            <span class="data-label">👟 Quién Marcará</span>
+            <span class="data-value">K. Mbappé (59%) / L. Messi (52%)</span>
+        </div>
+        <div class="data-row">
+            <span class="data-label">🌪️ Factores de Entorno</span>
+            <span class="data-value highlight-green">H2H Reciente Directo Histórico Alto</span>
+        </div>
+
+        <div class="odds-grid">
+            <div class="odd-item" onclick="marcarCuota(this, 2.45)"><span>Gana Local</span><strong>2.45</strong></div>
+            <div class="odd-item" onclick="marcarCuota(this, 3.20)"><span>Empate</span><strong>3.20</strong></div>
+            <div class="odd-item" onclick="marcarCuota(this, 2.60)"><span>Gana Visita</span><strong>2.60</strong></div>
         </div>
     </div>
 
     <!-- PARTIDO 4 -->
-    <div class="match-card" id="m4">
-        <div class="teams-container">
-            <div class="team-row">Real Madrid 🇪🇸 <span>Goles prom: 2.80</span></div>
-            <div class="team-row">Barcelona 🇪🇸 <span>Goles prom: 1.90</span></div>
+    <div class="match-panel">
+        <div class="match-info"><span>El Clásico 🇪🇸</span> <span>Mañana | 21:00h</span></div>
+        <div class="teams">Real Madrid 🇪🇸 vs Barcelona 🇪🇸</div>
+        
+        <div class="data-row">
+            <span class="data-label">🔮 Resultado Exacto</span>
+            <span class="data-value highlight-gold">3 - 1</span>
         </div>
-        <div class="odds-row">
-            <div class="odd-btn" onclick="selectOdd(this, 'Real Madrid', 1.90, 'R. Madrid vs Barcelona')"><span>1</span><strong>1.90</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Empate', 3.80, 'R. Madrid vs Barcelona')"><span>X</span><strong>3.80</strong></div>
-            <div class="odd-btn" onclick="selectOdd(this, 'Barcelona', 3.40, 'R. Madrid vs Barcelona')"><span>2</span><strong>3.40</strong></div>
+        <div class="data-row">
+            <span class="data-label">📈 Probabilidad Goles</span>
+            <span class="data-value">Más de 2.5 Goles (82% Prob)</span>
         </div>
-        <button class="btn-analizar" onclick="toggleForecast('m4-f')">🤖 FACTORES Y PRONÓSTICO CLAYTON</button>
-        <div class="forecast-panel" id="m4-f">
-            <div class="forecast-grid">🎯 Resultado Probable: <strong>3 - 1</strong> <span>(Prob: 16%)</span></div>
-            <div class="forecast-grid">👟 Anotador Clave: <span>Vinícius Jr (51%)</span></div>
+        <div class="data-row">
+            <span class="data-label">👟 Quién Marcará</span>
+            <span class="data-value">Vinícius Jr (51%) / R. Lewandowski (47%)</span>
+        </div>
+        <div class="data-row">
+            <span class="data-label">🌪️ Factores de Entorno</span>
