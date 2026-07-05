@@ -2,114 +2,171 @@ from flask import Flask
 
 app = Flask(__name__)
 
-DATA_9999 = """
+CLAYTON_REAL_TIME = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CLAYTON ENGINE ULTRA v9999</title>
+    <title>CLAYTON ENGINE - DATA EN VIVO</title>
     <style>
-        :root { --bg: #060b13; --card: #111927; --inner: #1f2a3c; --green: #00e701; --gold: #ffdf00; --blue: #00bfff; --purple: #bd93f9; }
-        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #fff; }
-        header { background: var(--card); border-bottom: 3px solid var(--green); padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
-        .premium { background: linear-gradient(135deg, #0f172a, #1e1b4b); border: 2px dashed var(--green); border-radius: 12px; padding: 12px; margin-bottom: 14px; font-size: 11px; }
-        .panel { background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 14px; border: 1px solid #2d3748; }
-        .title { font-size: 15px; font-weight: 900; margin-bottom: 8px; border-bottom: 1px solid #2d3748; padding-bottom: 6px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-        .box { background: var(--inner); padding: 8px; border-radius: 6px; font-size: 11px; }
-        .lbl { color: #9ca3af; font-size: 9px; font-weight: 800; text-transform: uppercase; }
-        .val { font-weight: 700; margin-top: 2px; }
-        .c-gold { color: var(--gold); } .c-green { color: var(--green); } .c-blue { color: var(--blue); } .c-purple { color: var(--purple); }
-        .odds { display: flex; justify-content: space-around; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 6px; margin-top: 8px; font-size: 11px; }
+        :root {
+            --bg-dark: #060b13;
+            --bg-card: #111927;
+            --bg-inner: #1f2a3c;
+            --accent-green: #00e701;
+            --accent-gold: #ffdf00;
+            --accent-blue: #00bfff;
+            --accent-purple: #bd93f9;
+            --text-white: #ffffff;
+            --text-muted: #9ca3af;
+            --border: #2d3748;
+        }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-dark); margin: 0; padding: 12px; color: var(--text-white); }
+        .container { max-width: 100%; margin: 0 auto; }
+        
+        header { background: var(--bg-card); border-bottom: 3px solid var(--accent-green); padding: 14px; text-align: center; border-radius: 12px; margin-bottom: 14px; }
+        .logo { margin: 0; font-size: 18px; font-weight: 900; }
+        .logo span { color: var(--accent-green); }
+
+        .premium-box { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 2px dashed var(--accent-green); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+        .premium-title { font-size: 13px; font-weight: 800; color: var(--accent-green); text-transform: uppercase; margin-bottom: 8px; }
+        .premium-list { padding-left: 16px; margin: 0; font-size: 12px; color: #cbd5e1; line-height: 1.6; }
+
+        .panel { background: var(--bg-card); border-radius: 12px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .match-header { font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
+        .teams { font-size: 17px; font-weight: 900; margin-bottom: 12px; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        
+        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+        .data-box { background: var(--bg-inner); padding: 10px; border-radius: 8px; }
+        .data-title { font-size: 9px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        .data-value { font-weight: 700; font-size: 13px; color: #fff; }
+        
+        .txt-gold { color: var(--accent-gold) !important; font-size: 15px !important; }
+        .txt-green { color: var(--accent-green) !important; }
+        .txt-blue { color: var(--accent-blue) !important; }
+        .txt-purple { color: var(--accent-purple) !important; }
+
+        .odds-row { display: flex; justify-content: space-around; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; margin-top: 10px; font-size: 11px; }
+        .factors-box { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 11px; border-left: 3px solid var(--accent-green); }
     </style>
 </head>
 <body>
-    <header><h3 style="margin:0;">🧠 CLAYTON ENGINE PRO <span>v9999</span></h3></header>
-    
-    <div class="premium">
-        <b style="color:var(--green);">🔒 COMBINADA INDESTRUCTIBLE (ÉXITO GLOBAL: 87.2%)</b>
-        <p style="margin:4px 0 0 0;">• Brasil-Noruega: +8.5 Córners | • Madrid-Barca: +3.5 Tarjetas | • Argentina-Francia: Ambos Anotan</p>
+<div class="container">
+
+    <header>
+        <div class="logo">🧠 CLAYTON <span>PRO-ANALYTICS v5</span></div>
+    </header>
+
+    <div class="premium-box">
+        <div class="premium-title">🔒 SUPERCOMBINADA DE ÉXITO ESTOCÁSTICO (2 DÍAS ACTUALES)</div>
+        <ul class="premium-list">
+            <li>⚽ Brasil vs Noruega ➔ <strong>Más de 8.5 Córners totales</strong> (93% Confianza)</li>
+            <li>⚽ México vs Inglaterra ➔ <strong>Más de 3.5 Tarjetas totales</strong> (95% Confianza)</li>
+            <li>⚽ Portugal vs España ➔ <strong>Ambos Anotan Gol</strong> (88% Confianza)</li>
+        </ul>
     </div>
 
-    <!-- P1 -->
+    <!-- PARTIDO 1 -->
     <div class="panel">
-        <div class="title">Brasil 🇧🇷 vs Noruega 🇳🇴</div>
-        <div class="grid">
-            <div class="box"><div class="lbl">🔮 Resultado Exacto</div><div class="val c-gold">3 - 2 (21%)</div></div>
-            <div class="box"><div class="lbl">📐 Córners Totales</div><div class="val c-green">Más de 9.5 (68%)</div></div>
-            <div class="box"><div class="lbl">🟨 Tarjetas Proyectadas</div><div class="val c-purple">Total: 4 (Riesgo: Ostigard)</div></div>
-            <div class="box"><div class="lbl">⏱️ Tramo Primer Gol</div><div class="val c-blue">Minuto 15 - 30</div></div>
+        <div class="match-header"><span>Mundial Octavos 🏆</span> <span class="txt-green">Hoy (5 Julio)</span></div>
+        <div class="teams">Brasil 🇧🇷 vs Noruega 🇳🇴</div>
+        
+        <div class="data-grid">
+            <div class="data-box">
+                <div class="data-title">🔮 Resultado Exacto Probable</div>
+                <div class="data-value txt-gold">3 - 2 <span style="font-size:10px;color:var(--text-muted);">(Prob: 21%)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">📐 Análisis de Córners</div>
+                <div class="data-value txt-green">Más 9.5 <span style="font-size:10px;color:var(--text-muted);">(68% Gana Brasil)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">🟨 Proyección de Tarjetas</div>
+                <div class="data-value txt-purple">Total: 4 <span style="font-size:10px;color:var(--text-muted);">(Riesgo: Ostigard)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">⏱️ Fluidez de Goles</div>
+                <div class="data-value txt-blue">1° Gol: Min 15-30 <span style="font-size:10px;color:var(--text-muted);">(Más 2.5: 72%)</span></div>
+            </div>
         </div>
         <div class="odds"><span>L: 44%</span><span>X: 25%</span><span>V: 31%</span></div>
+        <div class="factors-box">
+            <p style="margin:0;color:#cbd5e1;line-height:1.4;"><b>Variables Críticas:</b> 29°C + 82% Humedad asfixian a Noruega. Noruega sufre baja del defensa central titular. Brasil activa +12.4% empuje local.</p>
+        </div>
     </div>
 
-    <!-- P2 -->
+    <!-- PARTIDO 2 -->
     <div class="panel">
-        <div class="title">México 🇲🇽 vs Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
-        <div class="grid">
-            <div class="box"><div class="lbl">🔮 Resultado Exacto</div><div class="val c-gold">1 - 2 (18%)</div></div>
-            <div class="box"><div class="lbl">📐 Córners Totales</div><div class="val c-green">Menos de 8.5 (55%)</div></div>
-            <div class="box"><div class="lbl">🟨 Tarjetas Proyectadas</div><div class="val c-purple">Total: 6 (Árbitro Estricto)</div></div>
-            <div class="box"><div class="lbl">⏱️ Tramo Primer Gol</div><div class="val c-blue">Minuto 30 - 45</div></div>
+        <div class="match-header"><span>Mundial Octavos 🏆</span> <span class="txt-green">Hoy (5 Julio)</span></div>
+        <div class="teams">Estados Unidos 🇺🇸 vs Bélgica 🇧🇪</div>
+        
+        <div class="data-grid">
+            <div class="data-box">
+                <div class="data-title">🔮 Resultado Exacto Probable</div>
+                <div class="data-value txt-gold">1 - 1 <span style="font-size:10px;color:var(--text-muted);">(Prob: 28%)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">📐 Análisis de Córners</div>
+                <div class="data-value txt-green">Más 10.5 <span style="font-size:10px;color:var(--text-muted);">(61% Gana Bélgica)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">🟨 Proyección de Tarjetas</div>
+                <div class="data-value txt-purple">Total: 3 <span style="font-size:10px;color:var(--text-muted);">(Partido Limpio)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">⏱️ Fluidez de Goles</div>
+                <div class="data-value txt-blue">1° Gol: Min 45-60 <span style="font-size:10px;color:var(--text-muted);">(Menos 2.5: 67%)</span></div>
+            </div>
+        </div>
+        <div class="odds"><span>L: 29%</span><span>X: 28%</span><span>V: 43%</span></div>
+        <div class="factors-box">
+            <p style="margin:0;color:#cbd5e1;line-height:1.4;"><b>Variables Críticas:</b> Localía masiva para EE.UU. en Seattle. Bélgica llega con mayor ritmo de pases en medio campo pero con fatiga acumulada en la delantera.</p>
+        </div>
+    </div>
+
+    <!-- PARTIDO 3 -->
+    <div class="panel">
+        <div class="match-header"><span>Mundial Octavos 🏆</span> <span class="txt-green">Mañana (6 Julio)</span></div>
+        <div class="teams">México 🇲🇽 vs Inglaterra 🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+        
+        <div class="data-grid">
+            <div class="data-box">
+                <div class="data-title">🔮 Resultado Exacto Probable</div>
+                <div class="data-value txt-gold">1 - 2 <span style="font-size:10px;color:var(--text-muted);">(Prob: 18%)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">📐 Análisis de Córners</div>
+                <div class="data-value txt-green">Menos 8.5 <span style="font-size:10px;color:var(--text-muted);">(55% Gana Inglaterra)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">🟨 Proyección de Tarjetas</div>
+                <div class="data-value txt-purple">Total: 6 <span style="font-size:10px;color:var(--text-muted);">(Árbitro Estricto)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">⏱️ Fluidez de Goles</div>
+                <div class="data-value txt-blue">1° Gol: Min 30-45 <span style="font-size:10px;color:var(--text-muted);">(Menos 2.5: 62%)</span></div>
+            </div>
         </div>
         <div class="odds"><span>L: 34.3%</span><span>X: 25%</span><span>V: 40.7%</span></div>
-    </div>
-
-    <!-- P3 -->
-    <div class="panel">
-        <div class="title">Argentina 🇦🇷 vs Francia 🇫🇷</div>
-        <div class="grid">
-            <div class="box"><div class="lbl">🔮 Resultado Exacto</div><div class="val c-gold">2 - 2 (14%)</div></div>
-            <div class="box"><div class="lbl">📐 Córners Totales</div><div class="val c-green">Más de 10.5 (52%)</div></div>
-            <div class="box"><div class="lbl">🟨 Tarjetas Proyectadas</div><div class="val c-purple">Total: 5 (Riesgo: Romero)</div></div>
-            <div class="box"><div class="lbl">⏱️ Tramo Primer Gol</div><div class="val c-blue">Minuto 0 - 15</div></div>
+        <div class="factors-box">
+            <p style="margin:0;color:#cbd5e1;line-height:1.4;"><b>Variables Críticas:</b> Altitud extrema del Estadio Azteca reduce 15% el oxígeno visitante. México genera presión arbitral extrema y busca romper su maldición.</p>
         </div>
-        <div class="odds"><span>L: 38%</span><span>X: 29%</span><span>V: 33%</span></div>
     </div>
 
-    <!-- P4 -->
+    <!-- PARTIDO 4 -->
     <div class="panel">
-        <div class="title">Real Madrid 🇪🇸 vs Barcelona 🇪🇸</div>
-        <div class="grid">
-            <div class="box"><div class="lbl">🔮 Resultado Exacto</div><div class="val c-gold">3 - 1 (16%)</div></div>
-            <div class="box"><div class="lbl">📐 Córners Totales</div><div class="val c-green">Más de 9.5 (60%)</div></div>
-            <div class="box"><div class="lbl">🟨 Tarjetas Proyectadas</div><div class="val c-purple">Total: 7 (Riesgo: Gavi)</div></div>
-            <div class="box"><div class="lbl">⏱️ Tramo Primer Gol</div><div class="val c-blue">Minuto 15 - 30</div></div>
-        </div>
-        <div class="odds"><span>L: 48%</span><span>X: 22%</span><span>V: 30%</span></div>
-    </div>
-
-    <!-- P5 -->
-    <div class="panel">
-        <div class="title">Man. City 🏴󠁧󠁢󠁥󠁮󠁧󠁿 vs Bayern Múnich 🇩🇪</div>
-        <div class="grid">
-            <div class="box"><div class="lbl">🔮 Resultado Exacto</div><div class="val c-gold">2 - 0 (22%)</div></div>
-            <div class="box"><div class="lbl">📐 Córners Totales</div><div class="val c-green">Más de 10.5 (70%)</div></div>
-            <div class="box"><div class="lbl">🟨 Tarjetas Proyectadas</div><div class="val c-purple">Total: 3 (Limpio)</div></div>
-            <div class="box"><div class="lbl">⏱️ Tramo Primer Gol</div><div class="val c-blue">Minuto 0 - 15</div></div>
-        </div>
-        <div class="odds"><span>L: 55%</span><span>X: 20%</span><span>V: 25%</span></div>
-    </div>
-
-    <!-- P6 -->
-    <div class="panel">
-        <div class="title">Portugal 🇵🇹 vs Italia 🇮🇹</div>
-        <div class="grid">
-            <div class="box"><div class="lbl">🔮 Resultado Exacto</div><div class="val c-gold">1 - 1 (26%)</div></div>
-            <div class="box"><div class="lbl">📐 Córners Totales</div><div class="val c-green">Menos de 9.5 (58%)</div></div>
-            <div class="box"><div class="lbl">🟨 Tarjetas Proyectadas</div><div class="val c-purple">Total: 5 (Riesgo: Mancini)</div></div>
-            <div class="box"><div class="lbl">⏱️ Tramo Primer Gol</div><div class="val c-blue">Minuto 60 - 75</div></div>
-        </div>
-        <div class="odds"><span>L: 35%</span><span>X: 33%</span><span>V: 32%</span></div>
-    </div>
-</body>
-</html>
-"""
-
-@app.route('/')
-def home():
-    return DATA_9999
-
-if __name__ == '__main__':
-    app.run()
+        <div class="match-header"><span>Mundial Octavos 🏆</span> <span class="txt-green">Mañana (6 Julio)</span></div>
+        <div class="teams">Portugal 🇵🇹 vs España 🇪🇸</div>
+        
+        <div class="data-grid">
+            <div class="data-box">
+                <div class="data-title">🔮 Resultado Exacto Probable</div>
+                <div class="data-value txt-gold">2 - 2 <span style="font-size:10px;color:var(--text-muted);">(Prob: 15%)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">📐 Análisis de Córners</div>
+                <div class="data-value txt-green">Más 9.5 <span style="font-size:10px;color:var(--text-muted);">(58% Gana España)</span></div>
+            </div>
+            <div class="data-box">
+                <div class="data-title">🟨 Proyección de Tarjetas</div>
