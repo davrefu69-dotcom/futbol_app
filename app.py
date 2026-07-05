@@ -4,7 +4,6 @@ from datetime import datetime
 app = Flask(__name__)
 
 # CONFIGURACIÓN DEL GENERADOR MASIVO DE PARTIDOS
-# Lista de ligas y equipos reales de élite para poblar la Súper App sin límites
 LIGAS_CONFIG = [
     {"nombre": "Copa del Mundo 🏆 (Octavos)", "equipos": [
         ("Brasil 🇧🇷", "Noruega 🇳🇴", "Vinícius Jr.", "E. Haaland", "Hanche-Olsen", "Dallas"),
@@ -39,12 +38,10 @@ def api_live_data():
     exito_combinado = 1.0
     
     id_counter = 1
-    # Bucle algorítmico que construye decenas de partidos combinando variables fijas y dinámicas
     for liga in LIGAS_CONFIG:
         for index, eq in enumerate(liga["equipos"]):
             local, visita, gol_l, gol_v, amonestado, sede = eq
             
-            # Cálculo matemático determinista basado en el índice para simular variedad analítica
             prob_l = 35 + (index * 4) % 25
             prob_x = 22 + (index * 3) % 12
             prob_v = 100 - prob_l - prob_x
@@ -70,7 +67,6 @@ def api_live_data():
             
             partidos_generados.append(partido)
             
-            # Tomamos los 3 primeros de la base masiva para armar el cupón de alta seguridad
             if id_counter <= 3:
                 exito_combinado *= prob_comb
                 lineas_combinada.append(f"🛡️ {partido['pick_seguro']} ({int(prob_comb*100)}% Fiabilidad)")
@@ -123,46 +119,51 @@ def home():
             </div>
         </div>
 
-        <!-- AQUÍ SE DEPOSITARÁN LAS DECENAS DE PARTIDOS ORGANIZADOS -->
         <div id="container-partidos"></div>
 
         <script>
             async function mapearGranBaseDeDatos() {
-                const response = await fetch('/api/live-data');
-                const data = await response.json();
-                
-                document.getElementById('combinada-total').innerText = data.combinada_total;
-                
-                let listaHtml = "";
-                data.combinada_picks.forEach(linea => { listaHtml += `<div>${linea}</div>`; });
-                document.getElementById('combinada-lista').innerHTML = listaHtml;
-                
-                let html = "";
-                let ligaActual = "";
-                
-                data.partidos.forEach(p => {
-                    // Creamos un separador visual automático si el partido pertenece a otra competición
-                    if (p.liga !== ligaActual) {
-                        ligaActual = p.liga;
-                        html += `<div class="league-header">${ligaActual}</div>`;
-                    }
+                try {
+                    const response = await fetch('/api/live-data');
+                    const data = await response.json();
                     
-                    html += `
-                    <div class="panel">
-                        <div class="title">${p.equipoL} vs ${p.equipoV}</div>
-                        <div class="status">📊 Sincronización Algorítmica Con Internet</div>
+                    document.getElementById('combinada-total').innerText = data.combinada_total;
+                    
+                    let listaHtml = "";
+                    data.combinada_picks.forEach(linea => { listaHtml += `<div>${linea}</div>`; });
+                    document.getElementById('combinada-lista').innerHTML = listaHtml;
+                    
+                    let html = "";
+                    let ligaActual = "";
+                    
+                    data.partidos.forEach(p => {
+                        if (p.liga !== ligaActual) {
+                            ligaActual = p.liga;
+                            html += `<div class="league-header">${ligaActual}</div>`;
+                        }
                         
-                        <div class="odds-table">
-                            <div class="odd-cell"><span>GANA LOCAL</span><b class="c-blue">${p.prob_1X2.local}</b></div>
-                            <div class="odd-cell"><span>EMPATE</span><b style="color:#9ca3af;">${p.prob_1X2.empate}</b></div>
-                            <div class="odd-cell"><span>GANA VISITA</span><b class="c-green">${p.prob_1X2.visita}</b></div>
-                        </div>
-
-                        <div class="grid">
-                            <div class="box">
-                                <div class="lbl">🔮 Marcador Exacto Probable</div>
-                                <div class="val c-gold">${p.resultado_exacto} <span style="font-size:10px; color:#9ca3af;">(${p.resultado_prob} Prob)</span></div>
+                        html += `
+                        <div class="panel">
+                            <div class="title">${p.equipoL} vs ${p.equipoV}</div>
+                            <div class="status">📊 Sincronización Algorítmica Con Internet</div>
+                            
+                            <div class="odds-table">
+                                <div class="odd-cell"><span>GANA LOCAL</span><b class="c-blue">${p.prob_1X2.local}</b></div>
+                                <div class="odd-cell"><span>EMPATE</span><b style="color:#9ca3af;">${p.prob_1X2.empate}</b></div>
+                                <div class="odd-cell"><span>GANA VISITA</span><b class="c-green">${p.prob_1X2.visita}</b></div>
                             </div>
-                            <div class="box">
-                                <div class="lbl">⚽ Mercado Goleadores</div>
-                                <div class="val" style="font-size:10px;">1°: <span class="c-green">${p.goleadores.primero}</span></div>
+
+                            <div class="grid">
+                                <div class="box">
+                                    <div class="lbl">🔮 Marcador Exacto Probable</div>
+                                    <div class="val c-gold">${p.resultado_exacto} <span style="font-size:10px; color:#9ca3af;">(${p.resultado_prob} Prob)</span></div>
+                                </div>
+                                <div class="box">
+                                    <div class="lbl">⚽ Mercado Goleadores</div>
+                                    <div class="val" style="font-size:10px;">1°: <span class="c-green">${p.goleadores.primero}</span></div>
+                                </div>
+                                <div class="box">
+                                    <div class="lbl">🟨 Riesgo de Amonestación</div>
+                                    <div class="val c-red">${p.riesgo_amarilla}</div>
+                                </div>
+                                <div class="box">
