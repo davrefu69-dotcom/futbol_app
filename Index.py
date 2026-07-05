@@ -1,8 +1,5 @@
-
 from flask import Flask, jsonify, render_template_string
 from datetime import datetime
-
-app = Flask(__name__)
 
 # CONFIGURACIÓN DEL GENERADOR MASIVO DE PARTIDOS
 LIGAS_CONFIG = [
@@ -135,6 +132,9 @@ HTML_TEMPLATE = """
 </html>
 """
 
+# CREACIÓN DE LA INSTANCIA DE FLASK AL FINAL PARA EVITAR ERRORES DE DETECCIÓN
+app = Flask(__name__)
+
 @app.route('/api/live-data')
 def api_live_data():
     partidos_generados = []
@@ -168,9 +168,6 @@ def api_live_data():
             }
             partidos_generados.append(partido)
             if id_counter <= 3:
-                exito_combined = exito_combinado * prob_comb
+                exito_combinado *= prob_comb
                 lineas_combinada.append(f"🛡️ {partido['pick_seguro']} ({int(prob_comb*100)}% Fiabilidad)")
-            id_counter += 1
-
-    return jsonify({
-          
+                
