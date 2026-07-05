@@ -1,5 +1,10 @@
-app = None; from flask import Flask, jsonify, render_template_string; from datetime import datetime; app = Flask(__name__)
+import os
+from flask import Flask, jsonify, render_template_string
+from datetime import datetime
 
+app = Flask(__name__)
+
+# CONFIGURACIÓN DEL GENERADOR MASIVO DE PARTIDOS
 LIGAS_CONFIG = [
     {"nombre": "Copa del Mundo 🏆 (Octavos)", "equipos": [
         ("Brasil 🇧🇷", "Noruega 🇳🇴", "Vinícius Jr.", "E. Haaland", "Hanche-Olsen", "Dallas"),
@@ -74,7 +79,13 @@ def api_live_data():
 @app.route('/')
 def home():
     try:
-        with open('index.html', 'r', encoding='utf-8') as f:
+        # Localiza index.html de forma relativa al directorio del script
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_html = os.path.join(base_dir, 'index.html')
+        with open(ruta_html, 'r', encoding='utf-8') as f:
             return render_template_string(f.read())
-    except FileNotFoundError:
-        return "Archivo index.html no encontrado."
+    except Exception as e:
+        return f"Error al cargar la interfaz: {str(e)}"
+
+if __name__ == "__main__":
+    app.run(debug=True)
