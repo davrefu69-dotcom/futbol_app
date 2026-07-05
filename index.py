@@ -72,6 +72,7 @@ HTML_TEMPLATE = """
     <script>
         async function mapearGranBaseDeDatos() {
             try {
+                // Modificado para coincidir exactamente con la ruta de la API en la misma URL
                 const response = await fetch('/api/live-data');
                 const data = await response.json();
                 
@@ -132,9 +133,9 @@ HTML_TEMPLATE = """
 </html>
 """
 
-# CREACIÓN DE LA INSTANCIA DE FLASK AL FINAL PARA EVITAR ERRORES DE DETECCIÓN
 app = Flask(__name__)
 
+# RUTA 1: La API de los datos en formato JSON
 @app.route('/api/live-data')
 def api_live_data():
     partidos_generados = []
@@ -169,5 +170,4 @@ def api_live_data():
             partidos_generados.append(partido)
             if id_counter <= 3:
                 exito_combinado *= prob_comb
-                lineas_combinada.append(f"🛡️ {partido['pick_seguro']} ({int(prob_comb*100)}% Fiabilidad)")
                 
